@@ -1,13 +1,20 @@
+# Author: Sergio Machi
+# Creation date: 11/Apr/2021
+# Last edit: 14/Apr/2021
+
 import time
 import random
 import numpy as np
 import pygame as pg
 from pygame.locals import *
-from colorama import Fore, Style  # Tracking purposes.
+from colorama import Fore, Style
 
+# Pyreman
 WINDOW_CAPTION = 'Pyreman'
-WINDOW_SIZE = (1800, 900)  # 1800*900
-BLOCK_SIZE = 100  # 100
+# 1800*900
+WINDOW_SIZE = (1800, 900)
+# 100
+BLOCK_SIZE = 100
 
 BLOCK_TYPES = ('FIRE', 'GRASS', 'HOUSE', 'WATER')
 PYREMAN_IMG_PATH = 'resources/pyreman.png'
@@ -19,13 +26,21 @@ class Pyreman:
         self.parent_screen = parent_screen
         self.row = row
         self.col = col
-        self.dynamites = TURNS - 3
+        self.bombs = TURNS - 3
 
     def draw(self):
         block = pg.image.load(PYREMAN_IMG_PATH).convert_alpha()
         self.parent_screen.blit(block, (self.row * BLOCK_SIZE, self.col * BLOCK_SIZE))
         pg.display.flip()
-        print(Fore.YELLOW + f'Pyreman position: x={self.row}, y={self.col}' + Style.RESET_ALL)
+
+        # Log.
+        print(Fore.YELLOW + self.__str__() + Style.RESET_ALL)
+
+    def bomb(self):
+        if self.bombs != 0:
+            self.bombs -= 1
+            return True
+        return False
 
     def move_up(self):
         if self.col != 0:
@@ -46,6 +61,12 @@ class Pyreman:
         if self.row != int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1:
             self.row += 1
         self.draw()
+
+    def __str__(self):
+        return f'X: {self.row}, ' \
+               f'Y = {self.col}, ' \
+               f'Bombs left: {self.bombs}, ' \
+               f'Turns: {TURNS}'
 
 
 class Block:
@@ -70,6 +91,13 @@ class City:
             int(WINDOW_SIZE[1] / BLOCK_SIZE)
         ], dtype=object)
 
+    def draw(self):
+        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+                block = pg.image.load(self.city_matrix[rowi, coli].image_path).convert()
+                self.parent_screen.blit(block, (rowi * BLOCK_SIZE, coli * BLOCK_SIZE))
+        pg.display.flip()
+
     def build(self):
         for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
             for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
@@ -77,12 +105,13 @@ class City:
                 self.city_matrix[rowi, coli] = Block(BLOCK_TYPES[ran])
         self.draw()
 
-    def draw(self):
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
-                block = pg.image.load(self.city_matrix[rowi, coli].image_path).convert()
-                self.parent_screen.blit(block, (rowi * BLOCK_SIZE, coli * BLOCK_SIZE))
-        pg.display.flip()
+    def destroy_block(self, pyreman):
+        is_destroyed = pyreman.bomb()
+
+        if is_destroyed:
+            self.city_matrix[pyreman.row, pyreman.col] = Block(BLOCK_TYPES[3])
+            self.draw()
+        pyreman.draw()
 
     def set_first_fire(self):
         row = random.randint(0, int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1)
@@ -92,7 +121,6 @@ class City:
         block = pg.image.load(self.city_matrix[row, col].image_path).convert()
         self.parent_screen.blit(block, (row * BLOCK_SIZE, col * BLOCK_SIZE))
         pg.display.flip()
-        print(Fore.RED + f'\nFirst fire position: x={row}, y={col}' + Style.RESET_ALL)
 
     def place_pyreman(self, pyreman):
         while True:
@@ -104,11 +132,6 @@ class City:
                 pyreman.col = col
                 pyreman.draw()
                 break
-
-    def print_blocks_info(self):
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
-                print(self.city_matrix[rowi, coli])
 
 
 class Game:
@@ -125,28 +148,30 @@ class Game:
 
     def run(self):
         running = True
+
         while running:
+
             for event in pg.event.get():
 
                 if event.type == KEYDOWN:
-
                     self.city.draw()
 
                     if event.key == K_LEFT:
                         self.pyreman.move_left()
-                        print('Last move: left')
                     if event.key == K_RIGHT:
                         self.pyreman.move_right()
-                        print('Last move: right')
                     if event.key == K_UP:
                         self.pyreman.move_up()
-                        print('Last move: up')
                     if event.key == K_DOWN:
                         self.pyreman.move_down()
-                        print('Last move: down')
+
+                    if event.key == K_RETURN:
+                        self.city.destroy_block(self.pyreman)
 
                     if event.key == K_ESCAPE:
                         running = False
+
+                    print(Fore.LIGHTMAGENTA_EX + '-' * 35 + Style.RESET_ALL)
 
                 elif event.type == QUIT:
                     running = False
