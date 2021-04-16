@@ -1,6 +1,6 @@
 # Author: Sergio Machi
 # Creation date: 11/Apr/2021
-# Last edit: 14/Apr/2021
+# Last edit: 16/Apr/2021
 
 import time
 import random
@@ -122,6 +122,41 @@ class City:
         self.parent_screen.blit(block, (row * BLOCK_SIZE, col * BLOCK_SIZE))
         pg.display.flip()
 
+    def expand_fire(self):
+        self.set_danger()
+
+        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+                if self.city_matrix[rowi, coli].is_in_danger:
+                    self.city_matrix[rowi, coli] = Block(BLOCK_TYPES[0])
+        self.draw()
+
+    def set_danger(self):
+        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+
+                if self.city_matrix[rowi, coli].block_type == BLOCK_TYPES[0]:
+
+                    if rowi - 1 >= 0 and \
+                            self.city_matrix[rowi - 1, coli].block_type != BLOCK_TYPES[0] and \
+                            self.city_matrix[rowi - 1, coli].block_type != BLOCK_TYPES[3]:
+                        self.city_matrix[rowi - 1, coli].is_in_danger = True
+
+                    if rowi + 1 <= WINDOW_SIZE[0] / BLOCK_SIZE - 1 and \
+                            self.city_matrix[rowi + 1, coli].block_type != BLOCK_TYPES[0] and \
+                            self.city_matrix[rowi + 1, coli].block_type != BLOCK_TYPES[3]:
+                        self.city_matrix[rowi + 1, coli].is_in_danger = True
+
+                    if coli + 1 <= WINDOW_SIZE[1] / BLOCK_SIZE - 1 and \
+                            self.city_matrix[rowi, coli + 1].block_type != BLOCK_TYPES[0] and \
+                            self.city_matrix[rowi, coli + 1].block_type != BLOCK_TYPES[3]:
+                        self.city_matrix[rowi, coli + 1].is_in_danger = True
+
+                    if coli - 1 >= 0 and \
+                            self.city_matrix[rowi, coli - 1].block_type != BLOCK_TYPES[0] and \
+                            self.city_matrix[rowi, coli - 1].block_type != BLOCK_TYPES[3]:
+                        self.city_matrix[rowi, coli - 1].is_in_danger = True
+
     def place_pyreman(self, pyreman):
         while True:
             row = random.randint(0, int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1)
@@ -149,6 +184,9 @@ class Game:
     def run(self):
         running = True
 
+        time_elapsed_since_last_action = 0
+        clock = pg.time.Clock()
+
         while running:
 
             for event in pg.event.get():
@@ -175,6 +213,16 @@ class Game:
 
                 elif event.type == QUIT:
                     running = False
+
+            dt = clock.tick()
+            time_elapsed_since_last_action += dt
+
+            if time_elapsed_since_last_action > 1000:
+                self.city.expand_fire()
+                # Should this line be here or in a class?
+                self.pyreman.draw()
+                print('This line is executed every two seconds.')
+                time_elapsed_since_last_action = 0
 
             time.sleep(0.1)
 
