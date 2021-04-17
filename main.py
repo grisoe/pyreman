@@ -7,7 +7,6 @@ import random
 import numpy as np
 import pygame as pg
 from pygame.locals import *
-from colorama import Fore, Style
 
 # Pyreman
 WINDOW_CAPTION = 'Pyreman'
@@ -32,9 +31,6 @@ class Pyreman:
         block = pg.image.load(PYREMAN_IMG_PATH).convert_alpha()
         self.parent_screen.blit(block, (self.row * BLOCK_SIZE, self.col * BLOCK_SIZE))
         pg.display.flip()
-
-        # Log.
-        # print(Fore.YELLOW + self.__str__() + Style.RESET_ALL)
 
     def bomb(self):
         if self.bombs != 0:
