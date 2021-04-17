@@ -45,21 +45,29 @@ class Pyreman:
     def move_up(self):
         if self.col != 0:
             self.col -= 1
+        else:
+            self.col = int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1
         self.draw()
 
     def move_down(self):
         if self.col != int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1:
             self.col += 1
+        else:
+            self.col = 0
         self.draw()
 
     def move_left(self):
         if self.row != 0:
             self.row -= 1
+        else:
+            self.row = int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1
         self.draw()
 
     def move_right(self):
         if self.row != int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1:
             self.row += 1
+        else:
+            self.row = 0
         self.draw()
 
     def __str__(self):
