@@ -15,6 +15,9 @@ WINDOW_SIZE = (1800, 900)
 # 100
 BLOCK_SIZE = 100
 
+BOMB_AUDIO_PATH = 'resources/audio/bomb.wav'
+BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
+
 BLOCK_TYPES = ('FIRE', 'GRASS', 'HOUSE', 'WATER')
 PYREMAN_IMG_PATH = 'resources/images/pyreman.png'
 TURNS = 15
@@ -40,8 +43,8 @@ class Pyreman:
         return False
 
     def bomb_sound(self):
-        pg.mixer.music.load("resources/audio/bomb.wav")
-        pg.mixer.Channel(0).play(pg.mixer.Sound('resources/audio/bomb.wav'))
+        pg.mixer.music.load(BOMB_AUDIO_PATH)
+        pg.mixer.Channel(0).play(pg.mixer.Sound(BOMB_AUDIO_PATH))
 
     def move_up(self):
         if self.col != 0:
@@ -193,8 +196,8 @@ class Game:
         self.city.place_pyreman(self.pyreman)
 
     def init_background_audio(self):
-        pg.mixer.music.load("resources/audio/background.wav")
-        pg.mixer.Channel(1).play(pg.mixer.Sound('resources/audio/background.wav'), loops=-1)
+        pg.mixer.music.load(BACKGROUND_AUDIO_PATH)
+        pg.mixer.Channel(1).play(pg.mixer.Sound(BACKGROUND_AUDIO_PATH), loops=-1)
 
     def run(self):
         running = True
