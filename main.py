@@ -17,7 +17,7 @@ WINDOW_SIZE = (1800, 900)
 BLOCK_SIZE = 100
 
 BLOCK_TYPES = ('FIRE', 'GRASS', 'HOUSE', 'WATER')
-PYREMAN_IMG_PATH = 'resources/pyreman.png'
+PYREMAN_IMG_PATH = 'resources/images/pyreman.png'
 TURNS = 15
 
 
@@ -34,13 +34,18 @@ class Pyreman:
         pg.display.flip()
 
         # Log.
-        print(Fore.YELLOW + self.__str__() + Style.RESET_ALL)
+        # print(Fore.YELLOW + self.__str__() + Style.RESET_ALL)
 
     def bomb(self):
         if self.bombs != 0:
+            self.bomb_sound()
             self.bombs -= 1
             return True
         return False
+
+    def bomb_sound(self):
+        pg.mixer.music.load("resources/audio/bomb.wav")
+        pg.mixer.Channel(0).play(pg.mixer.Sound('resources/audio/bomb.wav'))
 
     def move_up(self):
         if self.col != 0:
@@ -80,7 +85,7 @@ class Pyreman:
 class Block:
     def __init__(self, block_type):
         self.block_type = block_type
-        self.image_path = 'resources/' + block_type.lower() + '.png'
+        self.image_path = 'resources/images/' + block_type.lower() + '.png'
         self.is_destroyed = False
         self.is_in_danger = False
 
@@ -140,6 +145,7 @@ class City:
         self.draw()
 
     def set_danger(self):
+        # Recursion would be nice here.
         for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
             for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
 
@@ -182,6 +188,7 @@ class Game:
         pg.init()
         pg.display.set_caption(WINDOW_CAPTION)
 
+        self.init_background_audio()
         self.surface = pg.display.set_mode(WINDOW_SIZE)
         self.city = City(self.surface)
         self.city.build()
@@ -189,10 +196,14 @@ class Game:
         self.pyreman = Pyreman(self.surface)
         self.city.place_pyreman(self.pyreman)
 
+    def init_background_audio(self):
+        pg.mixer.music.load("resources/audio/background.wav")
+        pg.mixer.Channel(1).play(pg.mixer.Sound('resources/audio/background.wav'), loops=-1)
+
     def run(self):
         running = True
 
-        time_elapsed_since_last_action = 0
+        time_since_last_fire_expansion = 0
         clock = pg.time.Clock()
 
         while running:
@@ -217,20 +228,20 @@ class Game:
                     if event.key == K_ESCAPE:
                         running = False
 
-                    print(Fore.LIGHTMAGENTA_EX + '-' * 35 + Style.RESET_ALL)
+                    # print(Fore.LIGHTMAGENTA_EX + '-' * 35 + Style.RESET_ALL)
 
                 elif event.type == QUIT:
                     running = False
 
             dt = clock.tick()
-            time_elapsed_since_last_action += dt
+            time_since_last_fire_expansion += dt
 
-            if time_elapsed_since_last_action > 1000:
+            if time_since_last_fire_expansion > 1000:
                 self.city.expand_fire()
                 # Should this line be here or in a class?
                 self.pyreman.draw()
-                print('This line is executed every two seconds.')
-                time_elapsed_since_last_action = 0
+                # print('This line is executed every two seconds.')
+                time_since_last_fire_expansion = 0
 
             time.sleep(0.1)
 
