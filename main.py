@@ -228,19 +228,16 @@ class Game:
                     if event.key == K_ESCAPE:
                         running = False
 
-                    # print(Fore.LIGHTMAGENTA_EX + '-' * 35 + Style.RESET_ALL)
-
                 elif event.type == QUIT:
                     running = False
 
             dt = clock.tick()
             time_since_last_fire_expansion += dt
 
-            if time_since_last_fire_expansion > 1000:
+            if time_since_last_fire_expansion > 2000:
                 self.city.expand_fire()
                 # Should this line be here or in a class?
                 self.pyreman.draw()
-                # print('This line is executed every two seconds.')
                 time_since_last_fire_expansion = 0
 
             time.sleep(0.1)
