@@ -1,6 +1,6 @@
 # Author: Sergio Machi
 # Creation date: 11/Apr/2021
-# Last edit: 16/Apr/2021
+# Last edit: 17/Apr/2021
 
 import time
 import random
@@ -10,8 +10,10 @@ from pygame.locals import *
 
 # Pyreman
 WINDOW_CAPTION = 'Pyreman'
-# 1800*900
-WINDOW_SIZE = (1800, 900)
+# 1800
+WINDOW_WIDTH = 1800
+# 900
+WINDOW_HEIGHT = 900
 # 100
 BLOCK_SIZE = 100
 
@@ -50,11 +52,11 @@ class Pyreman:
         if self.col != 0:
             self.col -= 1
         else:
-            self.col = int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1
+            self.col = int(WINDOW_HEIGHT / BLOCK_SIZE) - 1
         self.draw()
 
     def move_down(self):
-        if self.col != int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1:
+        if self.col != int(WINDOW_HEIGHT / BLOCK_SIZE) - 1:
             self.col += 1
         else:
             self.col = 0
@@ -64,11 +66,11 @@ class Pyreman:
         if self.row != 0:
             self.row -= 1
         else:
-            self.row = int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1
+            self.row = int(WINDOW_WIDTH / BLOCK_SIZE) - 1
         self.draw()
 
     def move_right(self):
-        if self.row != int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1:
+        if self.row != int(WINDOW_WIDTH / BLOCK_SIZE) - 1:
             self.row += 1
         else:
             self.row = 0
@@ -99,20 +101,20 @@ class City:
         self.parent_screen = parent_screen
 
         self.city_matrix = np.zeros([
-            int(WINDOW_SIZE[0] / BLOCK_SIZE),
-            int(WINDOW_SIZE[1] / BLOCK_SIZE)
+            int(WINDOW_WIDTH / BLOCK_SIZE),
+            int(WINDOW_HEIGHT / BLOCK_SIZE)
         ], dtype=object)
 
     def draw(self):
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+        for rowi in range(int(WINDOW_WIDTH / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_HEIGHT / BLOCK_SIZE)):
                 block = pg.image.load(self.city_matrix[rowi, coli].image_path).convert()
                 self.parent_screen.blit(block, (rowi * BLOCK_SIZE, coli * BLOCK_SIZE))
         pg.display.flip()
 
     def build(self):
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+        for rowi in range(int(WINDOW_WIDTH / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_HEIGHT / BLOCK_SIZE)):
                 ran = random.randint(1, len(BLOCK_TYPES) - 1)
                 self.city_matrix[rowi, coli] = Block(BLOCK_TYPES[ran])
         self.draw()
@@ -126,8 +128,8 @@ class City:
         pyreman.draw()
 
     def set_first_fire(self):
-        row = random.randint(0, int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1)
-        col = random.randint(0, int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1)
+        row = random.randint(0, int(WINDOW_WIDTH / BLOCK_SIZE) - 1)
+        col = random.randint(0, int(WINDOW_HEIGHT / BLOCK_SIZE) - 1)
         self.city_matrix[row, col] = Block(BLOCK_TYPES[0])
 
         block = pg.image.load(self.city_matrix[row, col].image_path).convert()
@@ -137,16 +139,16 @@ class City:
     def expand_fire(self):
         self.set_danger()
 
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+        for rowi in range(int(WINDOW_WIDTH / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_HEIGHT / BLOCK_SIZE)):
                 if self.city_matrix[rowi, coli].is_in_danger:
                     self.city_matrix[rowi, coli] = Block(BLOCK_TYPES[0])
         self.draw()
 
     def set_danger(self):
         # Recursion would be nice here.
-        for rowi in range(int(WINDOW_SIZE[0] / BLOCK_SIZE)):
-            for coli in range(int(WINDOW_SIZE[1] / BLOCK_SIZE)):
+        for rowi in range(int(WINDOW_WIDTH / BLOCK_SIZE)):
+            for coli in range(int(WINDOW_HEIGHT / BLOCK_SIZE)):
 
                 if self.city_matrix[rowi, coli].block_type == BLOCK_TYPES[0]:
 
@@ -155,12 +157,12 @@ class City:
                             self.city_matrix[rowi - 1, coli].block_type != BLOCK_TYPES[3]:
                         self.city_matrix[rowi - 1, coli].is_in_danger = True
 
-                    if rowi + 1 <= WINDOW_SIZE[0] / BLOCK_SIZE - 1 and \
+                    if rowi + 1 <= WINDOW_WIDTH / BLOCK_SIZE - 1 and \
                             self.city_matrix[rowi + 1, coli].block_type != BLOCK_TYPES[0] and \
                             self.city_matrix[rowi + 1, coli].block_type != BLOCK_TYPES[3]:
                         self.city_matrix[rowi + 1, coli].is_in_danger = True
 
-                    if coli + 1 <= WINDOW_SIZE[1] / BLOCK_SIZE - 1 and \
+                    if coli + 1 <= WINDOW_HEIGHT / BLOCK_SIZE - 1 and \
                             self.city_matrix[rowi, coli + 1].block_type != BLOCK_TYPES[0] and \
                             self.city_matrix[rowi, coli + 1].block_type != BLOCK_TYPES[3]:
                         self.city_matrix[rowi, coli + 1].is_in_danger = True
@@ -172,8 +174,8 @@ class City:
 
     def place_pyreman(self, pyreman):
         while True:
-            row = random.randint(0, int(WINDOW_SIZE[0] / BLOCK_SIZE) - 1)
-            col = random.randint(0, int(WINDOW_SIZE[1] / BLOCK_SIZE) - 1)
+            row = random.randint(0, int(WINDOW_WIDTH / BLOCK_SIZE) - 1)
+            col = random.randint(0, int(WINDOW_HEIGHT / BLOCK_SIZE) - 1)
 
             if self.city_matrix[row, col].block_type == BLOCK_TYPES[2]:
                 pyreman.row = row
@@ -188,7 +190,7 @@ class Game:
         pg.display.set_caption(WINDOW_CAPTION)
 
         self.init_background_audio()
-        self.surface = pg.display.set_mode(WINDOW_SIZE)
+        self.surface = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.city = City(self.surface)
         self.city.build()
         self.city.set_first_fire()
