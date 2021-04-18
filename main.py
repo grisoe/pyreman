@@ -17,6 +17,8 @@ WINDOW_HEIGHT = 900
 # 100
 BLOCK_SIZE = 100
 
+FIRE_EXPANSION_SPEED = 2000
+
 BOMB_AUDIO_PATH = 'resources/audio/bomb.wav'
 BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
 
@@ -235,7 +237,7 @@ class Game:
             dt = clock.tick()
             time_since_last_fire_expansion += dt
 
-            if time_since_last_fire_expansion > 2000:
+            if time_since_last_fire_expansion > FIRE_EXPANSION_SPEED:
                 self.city.expand_fire()
                 # Should this line be here or in a class?
                 self.pyreman.draw()
