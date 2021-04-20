@@ -16,23 +16,22 @@ WINDOW_WIDTH = 1800
 WINDOW_HEIGHT = 900
 # 100
 BLOCK_SIZE = 100
-
+# 2000
 FIRE_EXPANSION_SPEED = 2000
+# 0.1
 SLEEP_TIME = 0.1
+# 0
+INITIAL_POINTS = 0
+# 1000
+ADD_SUB_POINTS = 1000
+# 15
+TURNS = 15
 
 BOMB_AUDIO_PATH = 'resources/audio/bomb.wav'
 BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
 
 BLOCK_TYPES = ('FIRE', 'GRASS', 'HOUSE', 'WATER')
 PYREMAN_IMG_PATH = 'resources/images/pyreman.png'
-
-# 0
-INITIAL_POINTS = 0
-# 1000
-ADD_SUB_POINTS = 1000
-
-# 15
-TURNS = 15
 
 
 class Pyreman:
@@ -228,9 +227,12 @@ class Game:
         self.init_background_audio()
         self.surface = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.city = City(self.surface)
+        self.pyreman = Pyreman(self.surface)
+        self.init_game()
+
+    def init_game(self):
         self.city.build()
         self.city.set_first_fire()
-        self.pyreman = Pyreman(self.surface)
         self.city.place_pyreman(self.pyreman)
 
     def init_background_audio(self):
