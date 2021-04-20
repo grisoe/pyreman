@@ -1,6 +1,6 @@
 # Author: Sergio Machi
 # Creation date: 11/Apr/2021
-# Last edit: 17/Apr/2021
+# Last edit: 19/Apr/2021
 
 import time
 import random
@@ -24,6 +24,13 @@ BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
 
 BLOCK_TYPES = ('FIRE', 'GRASS', 'HOUSE', 'WATER')
 PYREMAN_IMG_PATH = 'resources/images/pyreman.png'
+
+# 0
+INITIAL_POINTS = 0
+# 1000
+ADD_SUB_POINTS = 1000
+
+# 15
 TURNS = 15
 
 
@@ -33,6 +40,7 @@ class Pyreman:
         self.row = row
         self.col = col
         self.bombs = TURNS - 3
+        self.points = INITIAL_POINTS
 
     def draw(self):
         block = pg.image.load(PYREMAN_IMG_PATH).convert_alpha()
@@ -49,6 +57,13 @@ class Pyreman:
     def bomb_sound(self):
         pg.mixer.music.load(BOMB_AUDIO_PATH)
         pg.mixer.Channel(0).play(pg.mixer.Sound(BOMB_AUDIO_PATH))
+
+    def add_points(self):
+        self.points += ADD_SUB_POINTS
+
+    def sub_points(self):
+        if self.points > 0:
+            self.points -= ADD_SUB_POINTS
 
     def move_up(self):
         if self.col != 0:
@@ -125,6 +140,13 @@ class City:
         is_destroyed = pyreman.bomb()
 
         if is_destroyed:
+            # Works but, should this be here and not in other class? #####################
+            if self.city_matrix[pyreman.row, pyreman.col].block_type == BLOCK_TYPES[0]:
+                pyreman.add_points()
+            elif self.city_matrix[pyreman.row, pyreman.col].block_type == BLOCK_TYPES[2]:
+                pyreman.sub_points()
+            ##############################################################################
+
             self.city_matrix[pyreman.row, pyreman.col] = Block(BLOCK_TYPES[3])
             self.draw()
         pyreman.draw()
