@@ -1,6 +1,6 @@
 # Author: Sergio Machi
 # Creation date: 11/Apr/2021
-# Last edit: 19/Apr/2021
+# Last edit: 20/Apr/2021
 
 import time
 import random
@@ -18,6 +18,7 @@ WINDOW_HEIGHT = 900
 BLOCK_SIZE = 100
 
 FIRE_EXPANSION_SPEED = 2000
+SLEEP_TIME = 0.1
 
 BOMB_AUDIO_PATH = 'resources/audio/bomb.wav'
 BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
@@ -277,7 +278,7 @@ class Game:
                 self.pyreman.draw()
                 time_since_last_fire_expansion = 0
 
-            time.sleep(0.1)
+            time.sleep(SLEEP_TIME)
 
 
 if __name__ == '__main__':
