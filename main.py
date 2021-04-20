@@ -25,7 +25,7 @@ INITIAL_POINTS = 0
 # 1000
 ADD_SUB_POINTS = 1000
 # 15
-TURNS = 15
+TURNS = 150
 
 BOMB_AUDIO_PATH = 'resources/audio/bomb.wav'
 BACKGROUND_AUDIO_PATH = 'resources/audio/background.wav'
@@ -73,10 +73,20 @@ class Pyreman:
         if self.points > 0:
             self.points -= ADD_SUB_POINTS
 
+    def sub_turns(self):
+        global TURNS
+        if TURNS > 0:
+            TURNS -= 1
+
     def set_location_type(self, city_matrix):
         self.location_type = city_matrix[self.row, self.col].block_type
 
     def move_up(self, city_matrix):
+        if TURNS == 0:
+            return
+        else:
+            self.sub_turns()
+
         if self.col != 0:
             self.col -= 1
         else:
@@ -86,6 +96,11 @@ class Pyreman:
         self.draw()
 
     def move_down(self, city_matrix):
+        if TURNS == 0:
+            return
+        else:
+            self.sub_turns()
+
         if self.col != int(WINDOW_HEIGHT / BLOCK_SIZE) - 1:
             self.col += 1
         else:
@@ -95,6 +110,11 @@ class Pyreman:
         self.draw()
 
     def move_left(self, city_matrix):
+        if TURNS == 0:
+            return
+        else:
+            self.sub_turns()
+
         if self.row != 0:
             self.row -= 1
         else:
@@ -104,6 +124,11 @@ class Pyreman:
         self.draw()
 
     def move_right(self, city_matrix):
+        if TURNS == 0:
+            return
+        else:
+            self.sub_turns()
+
         if self.row != int(WINDOW_WIDTH / BLOCK_SIZE) - 1:
             self.row += 1
         else:
