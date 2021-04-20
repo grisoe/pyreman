@@ -236,6 +236,16 @@ class Game:
         pg.mixer.music.load(BACKGROUND_AUDIO_PATH)
         pg.mixer.Channel(1).play(pg.mixer.Sound(BACKGROUND_AUDIO_PATH), loops=-1)
 
+    def handle_arrow_keys(self, event):
+        if event.key == K_LEFT:
+            self.pyreman.move_left(self.city.city_matrix)
+        elif event.key == K_RIGHT:
+            self.pyreman.move_right(self.city.city_matrix)
+        elif event.key == K_UP:
+            self.pyreman.move_up(self.city.city_matrix)
+        elif event.key == K_DOWN:
+            self.pyreman.move_down(self.city.city_matrix)
+
     def run(self):
         running = True
 
@@ -245,18 +255,9 @@ class Game:
         while running:
 
             for event in pg.event.get():
-
                 if event.type == KEYDOWN:
                     self.city.draw()
-
-                    if event.key == K_LEFT:
-                        self.pyreman.move_left(self.city.city_matrix)
-                    if event.key == K_RIGHT:
-                        self.pyreman.move_right(self.city.city_matrix)
-                    if event.key == K_UP:
-                        self.pyreman.move_up(self.city.city_matrix)
-                    if event.key == K_DOWN:
-                        self.pyreman.move_down(self.city.city_matrix)
+                    self.handle_arrow_keys(event)
 
                     if event.key == K_RETURN:
                         self.city.destroy_block(self.pyreman)
