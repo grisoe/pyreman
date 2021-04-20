@@ -47,6 +47,7 @@ class Pyreman:
         block = pg.image.load(PYREMAN_IMG_PATH).convert_alpha()
         self.parent_screen.blit(block, (self.row * BLOCK_SIZE, self.col * BLOCK_SIZE))
         pg.display.flip()
+        print(self.__str__())
 
     def bomb(self):
         if self.bombs != 0:
@@ -113,7 +114,9 @@ class Pyreman:
 
     def __str__(self):
         return f'X: {self.row}, ' \
-               f'Y = {self.col}, ' \
+               f'Y: {self.col}, ' \
+               f'Location: {self.location_type.title()}, ' \
+               f'Points = {self.points}, ' \
                f'Bombs left: {self.bombs}, ' \
                f'Turns: {TURNS}'
 
