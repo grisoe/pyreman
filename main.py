@@ -152,12 +152,12 @@ class City:
         is_destroyed = pyreman.bomb()
 
         if is_destroyed:
-            # Works but, should this be here and not in other class? #####################
-            if self.city_matrix[pyreman.row, pyreman.col].block_type == BLOCK_TYPES[0]:
+            # Works but, should this be here and not in other class? #
+            if pyreman.location_type == BLOCK_TYPES[0]:
                 pyreman.add_points()
-            elif self.city_matrix[pyreman.row, pyreman.col].block_type == BLOCK_TYPES[2]:
+            elif pyreman.location_type == BLOCK_TYPES[2]:
                 pyreman.sub_points()
-            ##############################################################################
+            ##########################################################
 
             self.city_matrix[pyreman.row, pyreman.col] = Block(BLOCK_TYPES[3])
             self.draw()
