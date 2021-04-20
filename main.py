@@ -41,6 +41,7 @@ class Pyreman:
         self.col = col
         self.bombs = TURNS - 3
         self.points = INITIAL_POINTS
+        self.location_type = BLOCK_TYPES[2]
 
     def draw(self):
         block = pg.image.load(PYREMAN_IMG_PATH).convert_alpha()
@@ -65,32 +66,43 @@ class Pyreman:
         if self.points > 0:
             self.points -= ADD_SUB_POINTS
 
-    def move_up(self):
+    def set_location_type(self, city_matrix):
+        self.location_type = city_matrix[self.row, self.col].block_type
+
+    def move_up(self, city_matrix):
         if self.col != 0:
             self.col -= 1
         else:
             self.col = int(WINDOW_HEIGHT / BLOCK_SIZE) - 1
+
+        self.set_location_type(city_matrix)
         self.draw()
 
-    def move_down(self):
+    def move_down(self, city_matrix):
         if self.col != int(WINDOW_HEIGHT / BLOCK_SIZE) - 1:
             self.col += 1
         else:
             self.col = 0
+
+        self.set_location_type(city_matrix)
         self.draw()
 
-    def move_left(self):
+    def move_left(self, city_matrix):
         if self.row != 0:
             self.row -= 1
         else:
             self.row = int(WINDOW_WIDTH / BLOCK_SIZE) - 1
+
+        self.set_location_type(city_matrix)
         self.draw()
 
-    def move_right(self):
+    def move_right(self, city_matrix):
         if self.row != int(WINDOW_WIDTH / BLOCK_SIZE) - 1:
             self.row += 1
         else:
             self.row = 0
+
+        self.set_location_type(city_matrix)
         self.draw()
 
     def __str__(self):
@@ -239,13 +251,13 @@ class Game:
                     self.city.draw()
 
                     if event.key == K_LEFT:
-                        self.pyreman.move_left()
+                        self.pyreman.move_left(self.city.city_matrix)
                     if event.key == K_RIGHT:
-                        self.pyreman.move_right()
+                        self.pyreman.move_right(self.city.city_matrix)
                     if event.key == K_UP:
-                        self.pyreman.move_up()
+                        self.pyreman.move_up(self.city.city_matrix)
                     if event.key == K_DOWN:
-                        self.pyreman.move_down()
+                        self.pyreman.move_down(self.city.city_matrix)
 
                     if event.key == K_RETURN:
                         self.city.destroy_block(self.pyreman)
