@@ -52,6 +52,12 @@ class Pyreman:
         if self.bombs != 0:
             self.bomb_sound()
             self.bombs -= 1
+
+            if self.location_type == BLOCK_TYPES[0]:
+                self.add_points()
+            elif self.location_type == BLOCK_TYPES[2]:
+                self.sub_points()
+
             return True
         return False
 
@@ -152,13 +158,6 @@ class City:
         is_destroyed = pyreman.bomb()
 
         if is_destroyed:
-            # Works but, should this be here and not in other class? #
-            if pyreman.location_type == BLOCK_TYPES[0]:
-                pyreman.add_points()
-            elif pyreman.location_type == BLOCK_TYPES[2]:
-                pyreman.sub_points()
-            ##########################################################
-
             self.city_matrix[pyreman.row, pyreman.col] = Block(BLOCK_TYPES[3])
             self.draw()
         pyreman.draw()
