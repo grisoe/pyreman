@@ -15,5 +15,5 @@ pip3 install -r requirements.txt
 ## Usage
 To run the game:
 ```bash
-python3 main.py
+python3 pyreman.py
 ```
