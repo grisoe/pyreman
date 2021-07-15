@@ -1,12 +1,13 @@
 # Pyreman
-A Python game about a fireman. Written in Python 3.8.5
+A Python game about a fireman. It is based on [fireman](https://github.com/grisoe/fireman), 
+a C game a wrote years ago.
+
+Written in Python 3.8.10.
 
 
-## Dependencies
-To get the code and install dependencies.
+## Requirements
+Use pip to install the required libraries.
 ```bash
-git clone https://github.com/grisoe/pyreman.git
-cd pyreman
 pip3 install -r requirements.txt
 ```
 
