@@ -1,4 +1,4 @@
-# Pyreman
+# pyreman
 A Python game about a fireman. It is based on [fireman](https://github.com/grisoe/fireman), 
 a C game a wrote years ago.
 
