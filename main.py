@@ -1,7 +1,3 @@
-# Author: Sergio Machi
-# Creation date: 11/Apr/2021
-# Last edit: 20/Apr/2021
-
 import time
 import random
 import numpy as np
